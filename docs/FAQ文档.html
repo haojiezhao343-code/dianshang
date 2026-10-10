@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>电商客服系统 - FAQ 文档</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; background: #f5f5f5; color: #333; line-height: 1.7; }
+  .container { max-width: 960px; margin: 0 auto; padding: 40px 20px; }
+  h1 { font-size: 28px; color: #1a1a1a; border-bottom: 3px solid #2563eb; padding-bottom: 12px; margin-bottom: 8px; }
+  .subtitle { color: #666; font-size: 14px; margin-bottom: 32px; }
+  h2 { font-size: 22px; color: #1a1a1a; margin: 36px 0 16px; padding-left: 12px; border-left: 4px solid #2563eb; }
+  h3 { font-size: 16px; color: #1a1a1a; margin: 16px 0 6px; }
+  .faq-item { background: #fff; border-radius: 8px; padding: 20px 24px; margin-bottom: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .faq-item details summary { cursor: pointer; font-weight: 600; font-size: 15px; color: #1a1a1a; list-style: none; display: flex; align-items: center; gap: 8px; }
+  .faq-item details summary::before { content: "Q"; display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; background: #2563eb; color: #fff; border-radius: 50%; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+  .faq-item details[open] summary::before { content: "A"; background: #16a34a; }
+  .faq-item details[open] summary { margin-bottom: 12px; }
+  .faq-answer { padding-left: 32px; font-size: 14px; color: #444; line-height: 1.8; }
+  .faq-answer p { margin-bottom: 8px; }
+  .faq-answer ul { margin-left: 20px; margin-bottom: 8px; }
+  .faq-answer li { margin-bottom: 4px; }
+  .tag { display: inline-block; padding: 1px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-left: 8px; vertical-align: middle; }
+  .tag-order { background: #dbeafe; color: #1e40af; }
+  .tag-logistics { background: #dcfce7; color: #166534; }
+  .tag-refund { background: #fee2e2; color: #991b1b; }
+  .tag-product { background: #ede9fe; color: #5b21b6; }
+  .tag-general { background: #fef3c7; color: #92400e; }
+  .category-header { display: flex; align-items: center; gap: 8px; }
+  .icon { font-size: 20px; }
+  .info-box { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px; padding: 12px 16px; margin: 12px 0; font-size: 13px; }
+  .info-box strong { color: #1e40af; }
+  .toc { background: #fff; border-radius: 8px; padding: 20px 24px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .toc ul { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; }
+  .toc li { font-size: 13px; }
+  .toc a { color: #2563eb; text-decoration: none; padding: 4px 12px; border: 1px solid #bfdbfe; border-radius: 4px; display: inline-block; }
+  .toc a:hover { background: #eff6ff; }
+  .footnote { font-size: 12px; color: #999; margin-top: 40px; padding-top: 16px; border-top: 1px solid #e5e7eb; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>电商客服系统 — FAQ 文档</h1>
+  <p class="subtitle">itwwy 电商助手 · 基于行业实践整理的 30 条高频问题与标准回复 · 涵盖订单、物流、退款、商品、通用五大类</p>
+
+  <div class="toc">
+    <strong>分类导航：</strong>
+    <ul>
+      <li><a href="#order">订单类</a></li>
+      <li><a href="#logistics">物流类</a></li>
+      <li><a href="#refund">退款售后类</a></li>
+      <li><a href="#product">商品咨询类</a></li>
+      <li><a href="#general">通用类</a></li>
+    </ul>
+  </div>
+
+  <div class="info-box">
+    <strong>文档用途：</strong> 本文档既是客服话术知识库，也是对话引擎意图识别的参考标准。每条 FAQ 包含用户常见问法、标准回复和系统处理逻辑说明，可用于培训客服人员、验证智能客服回复质量、以及扩充知识库。
+  </div>
+
+  <!-- 一、订单类 -->
+  <h2 id="order" class="category-header"><span class="icon">📦</span> 一、订单类 FAQ</h2>
+
+  <div class="faq-item"><details>
+    <summary>如何查询我的订单状态？<span class="tag tag-order">订单</span></summary>
+    <div class="faq-answer">
+      <p><strong>标准回复：</strong> 您好！请提供您的订单号，我可以立即为您查询订单状态。您也可以在"我的订单"页面查看所有订单的实时状态。</p>
+      <p><strong>常见问法：</strong></p>
+      <ul>
+        <li>"查一下我的订单"</li>
+        <li>"订单到哪一步了"</li>
+        <li>"我的订单处理得怎么样了"</li>
+      </ul>
+      <p><strong>系统流程：</strong> 触发 <code>order_status_query</code> → 收集 <code>order_number</code> 槽位 → 调用 <code>GET /orders/{order_id}/status</code> → 展示状态</p>
+    </div>
+  </details></div>
+
+  <div class="faq-item"><details>
+    <summary>订单有哪些状态？分别代表什么意思？<span class="tag tag-order">订单</span></summary>
+    <div class="faq-answer">
+      <p><strong>标准回复：</strong> 我们的订单状态包括以下几种：</p>
+      <ul>
+        <li><strong>待发货</strong> — 商家正在备货，预计 24 小时内发出。</li>
+        <li><strong>待揽收</strong> — 商家已打包完成，正在等待物流揽收。</li>
+        <li><strong>运输中</strong> — 包裹已发出，正在配送途中。</li>
+        <li><strong>已完成</strong> — 订单已签收完成。</li>
+        <li><strong>已取消</strong> — 订单已取消，款项将在 1-3 个工作日内原路退回。</li>
+      </ul>
+    </div>
+  </details></div>
+
+  <div class="faq-item"><details>
+    <summary>如何取消订单？<span class="tag tag-order">订单</span></summary>
+    <div class="faq-answer">
+      <p><strong>标准回复：</strong> 订单取消规则如下：</p>
+      <ul>
+        <li><strong>待发货状态</strong>：可以直接取消，取消后退款将原路返回。</li>
+        <li><strong>待揽收状态</strong>：可以联系客服尝试拦截，不保证成功。</li>
+        <li><strong>已发出（运输中）</strong>：无法取消订单，建议收到后申请退货退款。</li>
+      </ul>
+      <p><strong>注意：</strong> 订单取消后无法恢复，请谨慎操作。若包含赠品、优惠券等促销商品，关联促销也将一并取消。</p>
+    </div>
+  </details></div>
+
+  <div class="faq-item"><details>
+    <summary>订单金额不对 / 有优惠没有生效？<span class="tag tag-order">订单</span></summary>
+    <div class="faq-answer">
+      <p><strong>标准回复：</strong> 非常抱歉给您带来困扰！请您提供订单号，我来核实订单金额和优惠的使用情况。如果确实有优惠未生效，我会为您补登记录并跟进处理。</p>
+      <p><strong>处理逻辑：</strong> 通过 <code>GET /orders/{order_id}</code> 获取订单金额明细，与用户确认后人工跟进。</p>
+    </div>
+  </details></div>
+
+  <div class="faq-item"><details>
+    <summary>能否催一下发货？<span class="tag tag-order">订单</span></summary>
+    <div class="faq-answer">
+      <p><strong>标准回复：</strong> 当然可以！我这就为您创建发货提醒，仓库会优先处理您的订单。一般来说，待发货订单会在 24 小时内发出。</p>
+      <p><strong>系统流程：</strong> 对待发货/待揽收订单调用 <code>POST /orders/{order_id}/shipping-reminders</code> 创建催发货记录。</p>
+      <p><strong>限制：</strong> 已发货（运输中/已完成）的订单不支持催发货。</p>
+    </div>
+  </details></div>
+
+  <!-- 二、物流类 -->
+  <h2 id="logistics" class="category-header"><span class="icon">🚚</span> 二、物流类 FAQ</h2>
+
+  <div class="faq-item"><details>
+    <summary>如何查询物流信息？<span class="tag tag-logistics">物流</span></summary>
+    <div class="faq-answer">
+      <p><strong>标准回复：</strong> 请告诉我您的订单号，我马上为您查询物流进度、快递公司和运单号。</p>
+      <p><strong>常见问法：</strong></p>
+      <ul>
+        <li>"我的快递到哪了"</li>
+        <li>"包裹什么时候能到"</li>
+        <li>"物流信息怎么查"</li>
+      </ul>
+      <p><strong>系统流程：</strong> 触发 <code>logistics_tracking</code> → 收集 <code>order_number</code> → 调用 <code>GET /orders/{order_id}/logistics</code> → 展示物流轨迹</p>
+    </div>
+  </details></div>
+
+  <div class="faq-item"><details>
+    <summary>一般几天能收到货？<span class="tag tag-logistics">物流</span></summary>
+    <div class="faq-answer">
+      <p><strong>标准回复：</strong> 发货后一般 3-5 天可以收到货（偏远地区可能稍久）。江浙沪地区通常 24 小时内可达。具体到货时间受快递公司影响，我不做绝对承诺，但您的订单我会持续关注。</p>
+    </div>
+  </details></div>
+
+  <div class="faq-item"><details>
+    <summary>发的是哪家快递？能指定快递吗？<span class="tag tag-logistics">物流</span></summary>
+    <div class="faq-answer">
+      <p><strong>标准回复：</strong> 我们合作的快递公司包括京东物流、顺丰速运等。系统会根据收货地址自动选择最优快递。如需指定快递，请在下单时备注或联系客服，我们会尽量满足。</p>
+    </div>
+  </details></div>
+
+  <div class="faq-item"><details>
+    <summary>发货了但物流信息没更新怎么办？<span class="tag tag-logistics">物流</span></summary>
+    <div class="faq-answer">
+      <p><strong>标准回复：</strong> 非常理解您的心情！物流信息未更新可能是快递公司还未录入新信息，或同步有延迟，不会影响正常收货。我先帮您查询一下最新状态，如果确实异常，会立即联系快递公司核实。</p>
+    </div>
+  </details></div>
+
+  <div class="faq-item"><details>
+    <summary>能修改收货地址吗？<span class="tag tag-logistics">物流</span></summary>
+    <div class="faq-answer">
+      <p><strong>标准回复：</strong> 如果订单还未发货，您可以直接告诉我新地址，我帮您修改。如果已经发货了，暂时不支持修改地址，建议原地址有人代收，收到后帮您转寄。</p>
+    </div>
+  </details></div>
+
+  <div class="faq-item"><details>
+    <summary>能指定派送时间吗？<span class="tag tag-logistics">物流</span></summary>
+    <div class="faq-answer">
+      <p><strong>标准回复：</strong> 普通快递一般不支持指定派送时间。建议您留意物流信息，一旦显示快递员在派送，可以联系快递员协商一个合适的时间。</p>
+    </div>
+  </details></div>
+
+  <!-- 三、退款售后类 -->
+  <h2 id="refund" class="category-header"><span class="icon">💰</span> 三、退款售后类 FAQ</h2>
+
+  <div class="faq-item"><details>
+    <summary>如何申请退款？<span class="tag tag-refund">退款</span></summary>
+    <div class="faq-answer">
+      <p><strong>标准回复：</strong> 您好！请提供以下信息，我帮您提交退款申请：</p>
+      <ul>
+        <li>订单号</li>
+        <li>退款原因（如：商品质量问题、不想要了、与描述不符等）</li>
+      </ul>
+      <p><strong>常见问法：</strong></p>
+      <ul>
+        <li>"我要退款"</li>
+        <li>"这个订单退钱"</li>
+        <li>"商品不想要了怎么退"</li>
+      </ul>
+      <p><strong>系统流程：</strong> 触发 <code>refund_request</code> → 收集 <code>order_number</code> + <code>refund_reason</code> → 调用 <code>POST /orders/{order_id}/refund-applications</code></p>
+    </div>
+  </details></div>
+
+  <div class="faq-item"><details>
+    <summary>支持七天无理由退换货吗？<span class="tag tag-refund">退款</span></summary>
+    <div class="faq-answer">
+      <p><strong>标准回复：</strong> 支持七天无理由退换货（贴身衣物、定制类除外，以商品页标注为准）。商品需不影响二次销售，赠品需一并退回。您可以在订单页面点击"申请售后"按提示操作。</p>
+    </div>
+  </details></div>
+
+  <div class="faq-item"><details>
+    <summary>退款多久能到账？<span class="tag tag-refund">退款</span></summary>
+    <div class="faq-answer">
+      <p><strong>标准回复：</strong> 退款申请提交后，我们会在 1-3 个工作日内审核处理。审核通过后，退款将原路返回您的支付账户。到账时间取决于支付渠道，一般 1-5 个工作日。</p>
+    </div>
+  </details></div>
+
+  <div class="faq-item"><details>
+    <summary>退货运费由谁承担？<span class="tag tag-refund">退款</span></summary>
+    <div class="faq-answer">
+      <p><strong>标准回复：</strong> 运费承担规则如下：</p>
+      <ul>
+        <li><strong>质量问题</strong>：来回运费由商家承担。</li>
+        <li><strong>非质量问题（七天无理由）</strong>：顾客承担寄回运费，商家承担寄出运费。</li>
+      </ul>
+      <p>本店商品默认赠送运费险，退货成功后保费理赔自动到账，无需单独申请。</p>
+    </div>
+  </details></div>
+
+  <div class="faq-item"><details>
+    <summary>收到商品破损 / 发错货了怎么办？<span class="tag tag-refund">退款</span></summary>
+    <div class="faq-answer">
+      <p><strong>标准回复：</strong> 非常抱歉给您带来不好的体验！请您拍照发给我核实一下，确认后我们立即为您补发正确商品或办理退款，来回运费由我们承担。</p>
+    </div>
+  </details></div>
+
+  <div class="faq-item"><details>
+    <summary>退款申请提交后能撤销吗？<span class="tag tag-refund">退款</span></summary>
+    <div class="faq-answer">
+      <p><strong>标准回复：</strong> 如果退款申请还在审核中，您可以联系客服撤销。如果已经审核通过并退款，则无法撤销，需要重新下单购买。</p>
+      <p><strong>系统限制：</strong> 同一订单如果已有进行中（submitted/processing）的退款申请，不允许重复提交。</p>
+    </div>
+  </details></div>
+
+  <!-- 四、商品咨询类 -->
+  <h2 id="product" class="category-header"><span class="icon">🛍️</span> 四、商品咨询类 FAQ</h2>
+
+  <div class="faq-item"><details>
+    <summary>如何查询商品详情？<span class="tag tag-product">商品</span></summary>
+    <div class="faq-answer">
+      <p><strong>标准回复：</strong> 您可以点击商品卡片查看详情，或告诉我商品名称/编号，我帮您查询商品的价格、库存和规格信息。</p>
+      <p><strong>系统流程：</strong> 用户点击商品卡片发送 object 消息 → 系统调用 <code>GET /products/{product_id}</code> → 返回商品详情</p>
+    </div>
+  </details></div>
+
+  <div class="faq-item"><details>
+    <summary>商品有现货吗？<span class="tag tag-product">商品</span></summary>
+    <div class="faq-answer">
+      <p><strong>标准回复：</strong> 商品页面显示"有货"的都是现货，可以直接拍下付款。如果显示缺货，建议先加入购物车，到货后我们会通知您。</p>
+    </div>
+  </details></div>
+
+  <div class="faq-item"><details>
+    <summary>有类似的商品推荐吗？<span class="tag tag-product">商品</span></summary>
+    <div class="faq-answer">
+      <p><strong>标准回复：</strong> 当然！请先选择一个您感兴趣的商品，我会为您推荐类似的商品。</p>
+      <p><strong>系统流程：</strong> 触发 <code>similar_product_recommendation</code> → 检查 <code>product_id</code> 槽位 → 如缺失则追问 → 调用推荐接口</p>
+    </div>
+  </details></div>
+
+  <div class="faq-item"><details>
+    <summary>商品价格是多少？<span class="tag tag-product">商品</span></summary>
+    <div class="faq-answer">
+      <p><strong>标准回复：</strong> 请告诉我您想了解的商品名称或编号，我马上为您查询最新价格。您也可以直接点击商品卡片查看。</p>
+    </div>
+  </details></div>
+
+  <div class="faq-item"><details>
+    <summary>可以开发票吗？<span class="tag tag-product">商品</span></summary>
+    <div class="faq-answer">
+      <p><strong>标准回复：</strong> 可以的！下单时在"发票信息"处填写好抬头和税号，我们会随货一起寄出电子发票。如需增值税专票，请联系客服按专票流程开具。</p>
+    </div>
+  </details></div>
+
+  <!-- 五、通用类 -->
+  <h2 id="general" class="category-header"><span class="icon">💬</span> 五、通用类 FAQ</h2>
+
+  <div class="faq-item"><details>
+    <summary>你们能帮我处理哪些问题？<span class="tag tag-general">通用</span></summary>
+    <div class="faq-answer">
+      <p><strong>标准回复：</strong> 您好！这里是 itwwy 电商助手。我可以帮您：</p>
+      <ul>
+        <li>查询订单状态</li>
+        <li>查询物流信息</li>
+        <li>了解商品详情</li>
+        <li>提交退款申请</li>
+        <li>推荐相似商品</li>
+        <li>转接人工客服</li>
+      </ul>
+    </div>
+  </details></div>
+
+  <div class="faq-item"><details>
+    <summary>如何联系人工客服？<span class="tag tag-general">通用</span></summary>
+    <div class="faq-answer">
+      <p><strong>标准回复：</strong> 您可以直接说"转人工客服"或"人工服务"，系统会立即为您转接人工客服，请稍等。</p>
+      <p><strong>系统流程：</strong> 触发 <code>human_handoff</code> flow → 回复"转接人工客服"</p>
+    </div>
+  </details></div>
+
+  <div class="faq-item"><details>
+    <summary>有优惠活动吗？怎么领优惠券？<span class="tag tag-general">通用</span></summary>
+    <div class="faq-answer">
+      <p><strong>标准回复：</strong> 您可以点进商品页面，在价格下方有"领券"按钮，点击即可领取可用优惠券。大促期间还有满减活动，具体以活动页面为准。</p>
+    </div>
+  </details></div>
+
+  <div class="faq-item"><details>
+    <summary>你们的服务时间是？<span class="tag tag-general">通用</span></summary>
+    <div class="faq-answer">
+      <p><strong>标准回复：</strong> 智能客服 7×24 小时在线，随时为您服务。人工客服工作时间为每天 9:00-22:00，非工作时间请留言，我们会在工作时间第一时间回复您。</p>
+    </div>
+  </details></div>
+
+  <div class="faq-item"><details>
+    <summary>我的会员等级有什么用？<span class="tag tag-general">通用</span></summary>
+    <div class="faq-answer">
+      <p><strong>标准回复：</strong> PLUS 会员可享受专属客服优先通道、免费退换货、专属优惠券等权益。普通会员也可享受七天无理由退换货和基础客服服务。</p>
+    </div>
+  </details></div>
+
+  <div class="faq-item"><details>
+    <summary>商品有问题怎么投诉？<span class="tag tag-general">通用</span></summary>
+    <div class="faq-answer">
+      <p><strong>标准回复：</strong> 非常抱歉给您带来不好的体验！您的心情我完全理解，这件事我第一时间升级给主管，主管会在 30 分钟内亲自与您联系。为便于快速核实，方便告知订单号吗？</p>
+    </div>
+  </details></div>
+
+  <div class="faq-item"><details>
+    <summary>怎么修改收货人信息？<span class="tag tag-general">通用</span></summary>
+    <div class="faq-answer">
+      <p><strong>标准回复：</strong> 如果订单还未发货，您可以直接告诉我新的收货人姓名、电话和地址，我帮您修改。如果已发货，需要联系快递公司修改派送信息。</p>
+    </div>
+  </details></div>
+
+  <div class="faq-item"><details>
+    <summary>支持哪些支付方式？<span class="tag tag-general">通用</span></summary>
+    <div class="faq-answer">
+      <p><strong>标准回复：</strong> 我们支持微信支付、支付宝、银行卡等多种支付方式。下单后选择您方便的支付方式即可。退款会原路返回您的支付账户。</p>
+    </div>
+  </details></div>
+
+  <p class="footnote">
+    本文档参考行业电商客服标准话术与实践经验整理，共 30 条 FAQ。<br>
+    覆盖订单（5 条）、物流（6 条）、退款售后（6 条）、商品咨询（5 条）、通用（8 条）五大类。<br>
+    最后更新：2026-10-10
+  </p>
+
+</div>
+</body>
+</html>

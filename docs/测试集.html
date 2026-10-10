@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>电商客服系统 - 测试集</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; background: #f5f5f5; color: #333; line-height: 1.7; }
+  .container { max-width: 960px; margin: 0 auto; padding: 40px 20px; }
+  h1 { font-size: 28px; color: #1a1a1a; border-bottom: 3px solid #2563eb; padding-bottom: 12px; margin-bottom: 8px; }
+  .subtitle { color: #666; font-size: 14px; margin-bottom: 32px; }
+  h2 { font-size: 22px; color: #1a1a1a; margin: 32px 0 16px; padding-left: 12px; border-left: 4px solid #2563eb; }
+  h3 { font-size: 17px; color: #2563eb; margin: 20px 0 10px; }
+  .section { background: #fff; border-radius: 8px; padding: 24px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  th { background: #2563eb; color: #fff; padding: 8px 10px; text-align: left; font-weight: 600; }
+  td { padding: 8px 10px; border-bottom: 1px solid #e5e7eb; }
+  tr:nth-child(even) td { background: #f9fafb; }
+  .test-case { border: 1px solid #e5e7eb; border-radius: 6px; padding: 16px; margin: 12px 0; background: #fafbfc; }
+  .test-id { display: inline-block; background: #2563eb; color: #fff; font-size: 12px; padding: 2px 8px; border-radius: 4px; font-weight: 600; margin-right: 8px; }
+  .test-title { font-weight: 600; font-size: 15px; color: #1a1a1a; }
+  .test-detail { margin-top: 10px; font-size: 13px; color: #555; }
+  .test-detail strong { color: #1a1a1a; }
+  pre { background: #1e293b; color: #e2e8f0; padding: 12px; border-radius: 6px; overflow-x: auto; font-size: 12px; margin: 8px 0; }
+  code { background: #e0e7ff; color: #3730a3; padding: 1px 4px; border-radius: 3px; font-size: 12px; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+  .badge-pass { background: #dcfce7; color: #166534; }
+  .badge-fail { background: #fee2e2; color: #991b1b; }
+  .badge-skip { background: #fef3c7; color: #92400e; }
+  .badge-api { background: #dbeafe; color: #1e40af; }
+  .badge-chat { background: #ede9fe; color: #5b21b6; }
+  .badge-edge { background: #fce7f3; color: #9f1239; }
+  .info-box { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px; padding: 12px 16px; margin: 12px 0; font-size: 13px; }
+  .info-box strong { color: #1e40af; }
+  .toc { background: #fff; border-radius: 8px; padding: 20px 24px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .toc ul { list-style: none; }
+  .toc li { padding: 4px 0; font-size: 14px; }
+  .toc a { color: #2563eb; text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>电商客服系统 — 测试集</h1>
+  <p class="subtitle">itwwy 电商助手 · 覆盖电商后端 API、客服对话引擎、边界异常三大维度 · 共 30 条用例</p>
+
+  <div class="toc">
+    <strong>目录</strong>
+    <ul>
+      <li>一、<a href="#data">测试数据说明</a></li>
+      <li>二、<a href="#api">电商后端 API 测试（10 条）</a></li>
+      <li>三、<a href="#chat">客服对话引擎测试（12 条）</a></li>
+      <li>四、<a href="#edge">边界与异常测试（8 条）</a></li>
+    </ul>
+  </div>
+
+  <!-- 一、测试数据说明 -->
+  <h2 id="data">一、测试数据说明</h2>
+  <div class="section">
+    <h3>用户数据</h3>
+    <table>
+      <tr><th>user_id</th><th>昵称</th><th>会员等级</th></tr>
+      <tr><td>u1001</td><td>李先生</td><td>PLUS</td></tr>
+      <tr><td>u1002</td><td>王女士</td><td>普通</td></tr>
+      <tr><td>u1003</td><td>陈先生</td><td>PLUS</td></tr>
+    </table>
+
+    <h3>订单数据</h3>
+    <table>
+      <tr><th>order_id</th><th>所属用户</th><th>状态</th><th>金额</th><th>收货人</th></tr>
+      <tr><td>A20260410001</td><td>u1001</td><td>待发货</td><td>8999.00</td><td>李先生</td></tr>
+      <tr><td>A20260408002</td><td>u1001</td><td>运输中</td><td>149.00</td><td>李先生</td></tr>
+      <tr><td>A20260407004</td><td>u1001</td><td>待揽收</td><td>2999.00</td><td>李先生</td></tr>
+      <tr><td>A20260405003</td><td>u1001</td><td>已完成</td><td>14.90</td><td>李先生</td></tr>
+      <tr><td>A20260402005</td><td>u1001</td><td>已取消</td><td>399.00</td><td>李先生</td></tr>
+      <tr><td>B20260409001</td><td>u1002</td><td>运输中</td><td>699.00</td><td>王女士</td></tr>
+      <tr><td>B20260401002</td><td>u1002</td><td>已完成</td><td>149.00</td><td>王女士</td></tr>
+      <tr><td>C20260406001</td><td>u1003</td><td>待发货</td><td>399.00</td><td>陈先生</td></tr>
+    </table>
+
+    <h3>物流数据</h3>
+    <table>
+      <tr><th>order_id</th><th>物流公司</th><th>运单号</th><th>物流状态</th></tr>
+      <tr><td>A20260408002</td><td>京东物流</td><td>JD000123456789</td><td>运输中</td></tr>
+      <tr><td>A20260405003</td><td>京东物流</td><td>JD000987654321</td><td>已签收</td></tr>
+      <tr><td>B20260409001</td><td>顺丰速运</td><td>SF0005566778899</td><td>派送中</td></tr>
+    </table>
+
+    <h3>商品数据</h3>
+    <table>
+      <tr><th>product_id</th><th>标题</th><th>价格</th><th>库存</th></tr>
+      <tr><td>SKU10001</td><td>iPhone 15 Pro 256G 远峰蓝</td><td>8999.00</td><td>有货</td></tr>
+      <tr><td>SKU10002</td><td>小米恒温电热水壶 3</td><td>149.00</td><td>有货</td></tr>
+      <tr><td>SKU10003</td><td>暖火暖宝宝贴 20片装</td><td>14.90</td><td>有货</td></tr>
+      <tr><td>SKU10004</td><td>Apple Watch Series 9 GPS 45mm</td><td>2999.00</td><td>有货</td></tr>
+      <tr><td>SKU10005</td><td>美的空气炸锅 5L</td><td>399.00</td><td>有货</td></tr>
+      <tr><td>SKU10006</td><td>罗技 MX Master 3S 鼠标</td><td>699.00</td><td>有货</td></tr>
+    </table>
+
+    <div class="info-box">
+      <strong>服务地址</strong><br>
+      电商后端：<code>http://127.0.0.1:18081</code>（API 文档 <code>/docs</code>）<br>
+      客服后端：<code>http://127.0.0.1:18082</code>（POST <code>/api/chat</code>）<br>
+      前端页面：<code>http://127.0.0.1:5173</code><br>
+      MySQL：<code>127.0.0.1:63306</code>（commerce / customer_service 库）
+    </div>
+  </div>
+
+  <!-- 二、电商后端 API 测试 -->
+  <h2 id="api">二、电商后端 API 测试（10 条）</h2>
+  <div class="section">
+
+    <div class="test-case">
+      <span class="test-id">API-01</span><span class="badge badge-api">API</span>
+      <span class="test-title">健康检查</span>
+      <div class="test-detail">
+        <strong>请求：</strong> <code>GET /health</code><br>
+        <strong>预期：</strong> HTTP 200，<code>data.status = "ok"</code>，数据库连接正常<br>
+        <strong>命令：</strong>
+        <pre>curl -s http://127.0.0.1:18081/health</pre>
+      </div>
+    </div>
+
+    <div class="test-case">
+      <span class="test-id">API-02</span><span class="badge badge-api">API</span>
+      <span class="test-title">查询用户订单列表（u1001，有 5 条订单）</span>
+      <div class="test-detail">
+        <strong>请求：</strong> <code>GET /users/u1001/orders</code><br>
+        <strong>预期：</strong> HTTP 200，返回 5 条订单，第一条是最近的 A20260410001<br>
+        <strong>命令：</strong>
+        <pre>curl -s http://127.0.0.1:18081/users/u1001/orders</pre>
+      </div>
+    </div>
+
+    <div class="test-case">
+      <span class="test-id">API-03</span><span class="badge badge-api">API</span>
+      <span class="test-title">查询用户商品列表（u1001）</span>
+      <div class="test-detail">
+        <strong>请求：</strong> <code>GET /users/u1001/products</code><br>
+        <strong>预期：</strong> HTTP 200，返回用户最近购买的商品列表<br>
+        <strong>命令：</strong>
+        <pre>curl -s http://127.0.0.1:18081/users/u1001/products</pre>
+      </div>
+    </div>
+
+    <div class="test-case">
+      <span class="test-id">API-04</span><span class="badge badge-api">API</span>
+      <span class="test-title">查询订单详情（A20260410001，待发货）</span>
+      <div class="test-detail">
+        <strong>请求：</strong> <code>GET /orders/A20260410001</code><br>
+        <strong>预期：</strong> HTTP 200，status="待发货"，amount=8999.00，含 items 明细<br>
+        <strong>命令：</strong>
+        <pre>curl -s http://127.0.0.1:18081/orders/A20260410001</pre>
+      </div>
+    </div>
+
+    <div class="test-case">
+      <span class="test-id">API-05</span><span class="badge badge-api">API</span>
+      <span class="test-title">查询订单状态（A20260408002，运输中）</span>
+      <div class="test-detail">
+        <strong>请求：</strong> <code>GET /orders/A20260408002/status</code><br>
+        <strong>预期：</strong> HTTP 200，status="运输中"<br>
+        <strong>命令：</strong>
+        <pre>curl -s http://127.0.0.1:18081/orders/A20260408002/status</pre>
+      </div>
+    </div>
+
+    <div class="test-case">
+      <span class="test-id">API-06</span><span class="badge badge-api">API</span>
+      <span class="test-title">查询订单物流（A20260408002，京东物流）</span>
+      <div class="test-detail">
+        <strong>请求：</strong> <code>GET /orders/A20260408002/logistics</code><br>
+        <strong>预期：</strong> HTTP 200，logistics_company="京东物流"，含 traces 轨迹<br>
+        <strong>命令：</strong>
+        <pre>curl -s http://127.0.0.1:18081/orders/A20260408002/logistics</pre>
+      </div>
+    </div>
+
+    <div class="test-case">
+      <span class="test-id">API-07</span><span class="badge badge-api">API</span>
+      <span class="test-title">查询商品详情（SKU10001，iPhone 15 Pro）</span>
+      <div class="test-detail">
+        <strong>请求：</strong> <code>GET /products/SKU10001</code><br>
+        <strong>预期：</strong> HTTP 200，title="iPhone 15 Pro 256G 远峰蓝"，price=8999.00<br>
+        <strong>命令：</strong>
+        <pre>curl -s http://127.0.0.1:18081/products/SKU10001</pre>
+      </div>
+    </div>
+
+    <div class="test-case">
+      <span class="test-id">API-08</span><span class="badge badge-api">API</span>
+      <span class="test-title">创建发货提醒（A20260410001，待发货 → 允许催发货）</span>
+      <div class="test-detail">
+        <strong>请求：</strong> <code>POST /orders/A20260410001/shipping-reminders</code><br>
+        <strong>预期：</strong> HTTP 200，status="submitted"，生成 urge_id<br>
+        <strong>命令：</strong>
+        <pre>curl -s -X POST http://127.0.0.1:18081/orders/A20260410001/shipping-reminders \
+  -H "Content-Type: application/json" \
+  -d '{"submitted_by":"test_user","note":"用户希望尽快发货"}'</pre>
+      </div>
+    </div>
+
+    <div class="test-case">
+      <span class="test-id">API-09</span><span class="badge badge-api">API</span>
+      <span class="test-title">创建退款申请（A20260405003，已完成 → 允许退款）</span>
+      <div class="test-detail">
+        <strong>请求：</strong> <code>POST /orders/A20260405003/refund-applications</code><br>
+        <strong>预期：</strong> HTTP 200，status="submitted"，生成 refund_id<br>
+        <strong>命令：</strong>
+        <pre>curl -s -X POST http://127.0.0.1:18081/orders/A20260405003/refund-applications \
+  -H "Content-Type: application/json" \
+  -d '{"submitted_by":"test_user","reason":"商品质量问题"}'</pre>
+      </div>
+    </div>
+
+    <div class="test-case">
+      <span class="test-id">API-10</span><span class="badge badge-api">API</span>
+      <span class="test-title">重复退款申请冲突检测（A20260405003，已有进行中退款）</span>
+      <div class="test-detail">
+        <strong>请求：</strong> 再次 <code>POST /orders/A20260405003/refund-applications</code><br>
+        <strong>预期：</strong> HTTP 409，detail 包含"已存在进行中的退款申请"<br>
+        <strong>命令：</strong>
+        <pre>curl -s -w "\nHTTP %{http_code}" -X POST http://127.0.0.1:18081/orders/A20260405003/refund-applications \
+  -H "Content-Type: application/json" \
+  -d '{"submitted_by":"test_user","reason":"再次申请退款"}'</pre>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 三、客服对话引擎测试 -->
+  <h2 id="chat">三、客服对话引擎测试（12 条）</h2>
+  <div class="section">
+    <div class="info-box">
+      <strong>测试方式：</strong> 通过 <code>POST http://127.0.0.1:18082/api/chat</code> 发送对话消息，验证意图识别、槽位收集、多轮对话、意图切换等能力。<br>
+      <strong>注意：</strong> 对话引擎依赖 LLM（硅基流动 DeepSeek-V4-Flash），沙箱出网受限时可能返回兜底话术。
+    </div>
+
+    <div class="test-case">
+      <span class="test-id">CHAT-01</span><span class="badge badge-chat">对话</span>
+      <span class="test-title">欢迎引导（onboarding）</span>
+      <div class="test-detail">
+        <strong>输入：</strong> <code>"你好"</code><br>
+        <strong>预期：</strong> 触发 onboarding flow，回复中提及"查订单、查物流、商品信息、退款"<br>
+        <strong>命令：</strong>
+        <pre>curl -s -X POST http://127.0.0.1:18082/api/chat \
+  -H "Content-Type: application/json" \
+  -d '{"sender_id":"test_chat01","text":"你好"}'</pre>
+      </div>
+    </div>
+
+    <div class="test-case">
+      <span class="test-id">CHAT-02</span><span class="badge badge-chat">对话</span>
+      <span class="test-title">订单状态查询 — 完整多轮对话</span>
+      <div class="test-detail">
+        <strong>第 1 轮输入：</strong> <code>"我想查一下订单状态"</code><br>
+        <strong>预期 1：</strong> 识别意图=order_status_query，追问"请告诉我你的订单号"<br>
+        <strong>第 2 轮输入：</strong> <code>"A20260410001"</code><br>
+        <strong>预期 2：</strong> 回复包含订单状态"待发货"<br>
+        <strong>命令：</strong>
+        <pre># 第 1 轮
+curl -s -X POST http://127.0.0.1:18082/api/chat \
+  -H "Content-Type: application/json" \
+  -d '{"sender_id":"test_chat02","text":"我想查一下订单状态"}'
+
+# 第 2 轮（同一 sender_id 维持上下文）
+curl -s -X POST http://127.0.0.1:18082/api/chat \
+  -H "Content-Type: application/json" \
+  -d '{"sender_id":"test_chat02","text":"A20260410001"}'</pre>
+      </div>
+    </div>
+
+    <div class="test-case">
+      <span class="test-id">CHAT-03</span><span class="badge badge-chat">对话</span>
+      <span class="test-title">订单状态查询 — 一次性给出订单号</span>
+      <div class="test-detail">
+        <strong>输入：</strong> <code>"帮我查一下订单A20260408002的状态"</code><br>
+        <strong>预期：</strong> 单轮完成，回复包含"运输中"<br>
+        <strong>命令：</strong>
+        <pre>curl -s -X POST http://127.0.0.1:18082/api/chat \
+  -H "Content-Type: application/json" \
+  -d '{"sender_id":"test_chat03","text":"帮我查一下订单A20260408002的状态"}'</pre>
+      </div>
+    </div>
+
+    <div class="test-case">
+      <span class="test-id">CHAT-04</span><span class="badge badge-chat">对话</span>
+      <span class="test-title">物流查询 — 多轮对话</span>
+      <div class="test-detail">
+        <strong>第 1 轮输入：</strong> <code>"我的快递到哪了"</code><br>
+        <strong>预期 1：</strong> 识别意图=logistics_tracking，追问订单号<br>
+        <strong>第 2 轮输入：</strong> <code>"A20260408002"</code><br>
+        <strong>预期 2：</strong> 回复包含"京东物流"和运单号 JD000123456789<br>
+        <strong>命令：</strong>
+        <pre>curl -s -X POST http://127.0.0.1:18082/api/chat \
+  -H "Content-Type: application/json" \
+  -d '{"sender_id":"test_chat04","text":"我的快递到哪了"}'
+curl -s -X POST http://127.0.0.1:18082/api/chat \
+  -H "Content-Type: application/json" \
+  -d '{"sender_id":"test_chat04","text":"A20260408002"}'</pre>
+      </div>
+    </div>
+
+    <div class="test-case">
+      <span class="test-id">CHAT-05</span><span class="badge badge-chat">对话</span>
+      <span class="test-title">退款申请 — 多轮对话（收集订单号 + 退款原因）</span>
+      <div class="test-detail">
+        <strong>第 1 轮：</strong> <code>"我要申请退款"</code> → 追问订单号<br>
+        <strong>第 2 轮：</strong> <code>"A20260407004"</code> → 追问退款原因<br>
+        <strong>第 3 轮：</strong> <code>"商品与描述不符"</code> → 确认退款申请已提交<br>
+        <strong>命令：</strong>
+        <pre>curl -s -X POST http://127.0.0.1:18082/api/chat -H "Content-Type: application/json" \
+  -d '{"sender_id":"test_chat05","text":"我要申请退款"}'
+curl -s -X POST http://127.0.0.1:18082/api/chat -H "Content-Type: application/json" \
+  -d '{"sender_id":"test_chat05","text":"A20260407004"}'
+curl -s -X POST http://127.0.0.1:18082/api/chat -H "Content-Type: application/json" \
+  -d '{"sender_id":"test_chat05","text":"商品与描述不符"}'</pre>
+      </div>
+    </div>
+
+    <div class="test-case">
+      <span class="test-id">CHAT-06</span><span class="badge badge-chat">对话</span>
+      <span class="test-title">人工客服转接</span>
+      <div class="test-detail">
+        <strong>输入：</strong> <code>"转人工客服"</code><br>
+        <strong>预期：</strong> 触发 human_handoff flow，回复"转接人工客服"<br>
+        <strong>命令：</strong>
+        <pre>curl -s -X POST http://127.0.0.1:18082/api/chat -H "Content-Type: application/json" \
+  -d '{"sender_id":"test_chat06","text":"转人工客服"}'</pre>
+      </div>
+    </div>
+
+    <div class="test-case">
+      <span class="test-id">CHAT-07</span><span class="badge badge-chat">对话</span>
+      <span class="test-title">对象消息 — 点击订单卡片查询</span>
+      <div class="test-detail">
+        <strong>输入：</strong> object 消息，<code>{"type":"order","id":"A20260407004"}</code><br>
+        <strong>预期：</strong> 返回该订单的相关信息（状态或详情）<br>
+        <strong>命令：</strong>
+        <pre>curl -s -X POST http://127.0.0.1:18082/api/chat -H "Content-Type: application/json" \
+  -d '{"sender_id":"test_chat07","object":{"type":"order","id":"A20260407004","title":"Apple Watch"}}'</pre>
+      </div>
+    </div>
+
+    <div class="test-case">
+      <span class="test-id">CHAT-08</span><span class="badge badge-chat">对话</span>
+      <span class="test-title">意图切换 — 查订单中途改查物流</span>
+      <div class="test-detail">
+        <strong>第 1 轮：</strong> <code>"查订单状态"</code> → 追问订单号<br>
+        <strong>第 2 轮：</strong> <code>"算了，我想查物流"</code> → 识别意图切换，追问订单号（logistics_tracking）<br>
+        <strong>命令：</strong>
+        <pre>curl -s -X POST http://127.0.0.1:18082/api/chat -H "Content-Type: application/json" \
+  -d '{"sender_id":"test_chat08","text":"查订单状态"}'
+curl -s -X POST http://127.0.0.1:18082/api/chat -H "Content-Type: application/json" \
+  -d '{"sender_id":"test_chat08","text":"算了，我想查物流"}'</pre>
+      </div>
+    </div>
+
+    <div class="test-case">
+      <span class="test-id">CHAT-09</span><span class="badge badge-chat">对话</span>
+      <span class="test-title">相似商品推荐</span>
+      <div class="test-detail">
+        <strong>输入：</strong> <code>"有没有类似的商品推荐"</code><br>
+        <strong>预期：</strong> 触发 similar_product_recommendation flow，可能追问商品 ID<br>
+        <strong>命令：</strong>
+        <pre>curl -s -X POST http://127.0.0.1:18082/api/chat -H "Content-Type: application/json" \
+  -d '{"sender_id":"test_chat09","text":"有没有类似的商品推荐"}'</pre>
+      </div>
+    </div>
+
+    <div class="test-case">
+      <span class="test-id">CHAT-10</span><span class="badge badge-chat">对话</span>
+      <span class="test-title">口语化表达 — "我的包裹到哪了"</span>
+      <div class="test-detail">
+        <strong>输入：</strong> <code>"我的包裹到哪了"</code><br>
+        <strong>预期：</strong> 识别为物流查询意图（logistics_tracking），追问订单号<br>
+        <strong>命令：</strong>
+        <pre>curl -s -X POST http://127.0.0.1:18082/api/chat -H "Content-Type: application/json" \
+  -d '{"sender_id":"test_chat10","text":"我的包裹到哪了"}'</pre>
+      </div>
+    </div>
+
+    <div class="test-case">
+      <span class="test-id">CHAT-11</span><span class="badge badge-chat">对话</span>
+      <span class="test-title">口语化表达 — "这个订单退钱"</span>
+      <div class="test-detail">
+        <strong>输入：</strong> <code>"这个订单退钱"</code><br>
+        <strong>预期：</strong> 识别为退款意图（refund_request），追问订单号或退款原因<br>
+        <strong>命令：</strong>
+        <pre>curl -s -X POST http://127.0.0.1:18082/api/chat -H "Content-Type: application/json" \
+  -d '{"sender_id":"test_chat11","text":"这个订单退钱"}'</pre>
+      </div>
+    </div>
+
+    <div class="test-case">
+      <span class="test-id">CHAT-12</span><span class="badge badge-chat">对话</span>
+      <span class="test-title">对话历史接口</span>
+      <div class="test-detail">
+        <strong>请求：</strong> <code>GET /api/chat/history?sender_id=test_chat02</code><br>
+        <strong>预期：</strong> HTTP 200，返回 messages 列表（当前为 mock 数据）<br>
+        <strong>命令：</strong>
+        <pre>curl -s "http://127.0.0.1:18082/api/chat/history?sender_id=test_chat02"</pre>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 四、边界与异常测试 -->
+  <h2 id="edge">四、边界与异常测试（8 条）</h2>
+  <div class="section">
+
+    <div class="test-case">
+      <span class="test-id">EDGE-01</span><span class="badge badge-edge">边界</span>
+      <span class="test-title">查询不存在的用户订单</span>
+      <div class="test-detail">
+        <strong>请求：</strong> <code>GET /users/nonexistent_user/orders</code><br>
+        <strong>预期：</strong> HTTP 404，detail 包含"用户不存在"<br>
+        <strong>命令：</strong>
+        <pre>curl -s -w "\nHTTP %{http_code}" http://127.0.0.1:18081/users/nonexistent_user/orders</pre>
+      </div>
+    </div>
+
+    <div class="test-case">
+      <span class="test-id">EDGE-02</span><span class="badge badge-edge">边界</span>
+      <span class="test-title">查询不存在的订单详情</span>
+      <div class="test-detail">
+        <strong>请求：</strong> <code>GET /orders/NOTEXIST99999</code><br>
+        <strong>预期：</strong> HTTP 404，detail 包含"订单不存在"<br>
+        <strong>命令：</strong>
+        <pre>curl -s -w "\nHTTP %{http_code}" http://127.0.0.1:18081/orders/NOTEXIST99999</pre>
+      </div>
+    </div>
+
+    <div class="test-case">
+      <span class="test-id">EDGE-03</span><span class="badge badge-edge">边界</span>
+      <span class="test-title">查询无物流信息的订单</span>
+      <div class="test-detail">
+        <strong>请求：</strong> <code>GET /orders/A20260407004/logistics</code>（待揽收，无物流）<br>
+        <strong>预期：</strong> HTTP 404，detail 包含"暂无物流信息"<br>
+        <strong>命令：</strong>
+        <pre>curl -s -w "\nHTTP %{http_code}" http://127.0.0.1:18081/orders/A20260407004/logistics</pre>
+      </div>
+    </div>
+
+    <div class="test-case">
+      <span class="test-id">EDGE-04</span><span class="badge badge-edge">边界</span>
+      <span class="test-title">查询不存在的商品</span>
+      <div class="test-detail">
+        <strong>请求：</strong> <code>GET /products/SKU99999</code><br>
+        <strong>预期：</strong> HTTP 404，detail 包含"商品不存在"<br>
+        <strong>命令：</strong>
+        <pre>curl -s -w "\nHTTP %{http_code}" http://127.0.0.1:18081/products/SKU99999</pre>
+      </div>
+    </div>
+
+    <div class="test-case">
+      <span class="test-id">EDGE-05</span><span class="badge badge-edge">边界</span>
+      <span class="test-title">对已发货订单创建发货提醒（状态不允许）</span>
+      <div class="test-detail">
+        <strong>请求：</strong> <code>POST /orders/A20260408002/shipping-reminders</code>（运输中）<br>
+        <strong>预期：</strong> HTTP 400，detail 包含"当前不适合再次发起发货提醒"<br>
+        <strong>命令：</strong>
+        <pre>curl -s -w "\nHTTP %{http_code}" -X POST http://127.0.0.1:18081/orders/A20260408002/shipping-reminders \
+  -H "Content-Type: application/json" -d '{"note":"催发货"}'</pre>
+      </div>
+    </div>
+
+    <div class="test-case">
+      <span class="test-id">EDGE-06</span><span class="badge badge-edge">边界</span>
+      <span class="test-title">客服对话 — 无意图的闲聊</span>
+      <div class="test-detail">
+        <strong>输入：</strong> <code>"今天天气怎么样"</code><br>
+        <strong>预期：</strong> 触发 cannot_handle / 闲聊兜底，不抛异常<br>
+        <strong>命令：</strong>
+        <pre>curl -s -X POST http://127.0.0.1:18082/api/chat -H "Content-Type: application/json" \
+  -d '{"sender_id":"test_edge06","text":"今天天气怎么样"}'</pre>
+      </div>
+    </div>
+
+    <div class="test-case">
+      <span class="test-id">EDGE-07</span><span class="badge badge-edge">边界</span>
+      <span class="test-title">客服对话 — 空文本消息</span>
+      <div class="test-detail">
+        <strong>输入：</strong> <code>{"sender_id":"test_edge07","text":""}</code><br>
+        <strong>预期：</strong> 不抛 500 异常，返回兜底回复或提示<br>
+        <strong>命令：</strong>
+        <pre>curl -s -w "\nHTTP %{http_code}" -X POST http://127.0.0.1:18082/api/chat \
+  -H "Content-Type: application/json" -d '{"sender_id":"test_edge07","text":""}'</pre>
+      </div>
+    </div>
+
+    <div class="test-case">
+      <span class="test-id">EDGE-08</span><span class="badge badge-edge">边界</span>
+      <span class="test-title">客服对话 — 超长文本输入</span>
+      <div class="test-detail">
+        <strong>输入：</strong> 200+ 字的文本消息<br>
+        <strong>预期：</strong> 正常处理，不截断不报错<br>
+        <strong>命令：</strong>
+        <pre>curl -s -X POST http://127.0.0.1:18082/api/chat -H "Content-Type: application/json" \
+  -d '{"sender_id":"test_edge08","text":"我想查询一下我之前买的那个东西的订单状态，但是我不太记得订单号了，你能帮我查一下吗？我大概记得是上个月买的，好像是一个电子产品，价格比较贵的那种，应该是手机或者手表之类的，你能帮我找找吗？我真的很着急想知道这个订单现在怎么样了，因为我想确认一下什么时候能收到货。"}'</pre>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+</body>
+</html>
